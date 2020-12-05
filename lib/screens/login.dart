@@ -45,19 +45,21 @@ class _MyLoginState extends State<MyLogin> {
     return Scaffold(
       body: Center(
         child: Container(
-          padding: EdgeInsets.all(80.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _buildTextFields(),
-              _buildButtons(),
-              Consumer<AuthStatus>(
-              builder: (context, authStatus, child) => Text(
-                '${authStatus.loggedIn}',
-                style: Theme.of(context).textTheme.headline4,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(80.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _buildTextFields(),
+                _buildButtons(),
+                Consumer<AuthStatus>(
+                builder: (context, authStatus, child) => Text(
+                  '${authStatus.loggedIn}',
+                  style: Theme.of(context).textTheme.headline4,
+                ),
               ),
+            ],
             ),
-          ],
           ),
         ),
       ),
