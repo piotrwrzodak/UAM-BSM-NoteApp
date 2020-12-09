@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:bsm_noteapp/services/auth.dart';
 import 'package:bsm_noteapp/services/keysRepo.dart';
+import 'package:bsm_noteapp/services/passwordRepo.dart';
 import 'package:flutter/material.dart';
 import 'package:pointycastle/api.dart';
 import 'package:provider/provider.dart';
@@ -125,7 +124,8 @@ class _MyLoginState extends State<MyLogin> {
                   var authStatus = context.read<AuthStatus>();
                   authStatus.toggle();
                   _loginPressed();
-                  _keys();
+                  //_keys();
+                  _password();
                 },
               ),
             FlatButton(
@@ -185,21 +185,22 @@ class _MyLoginState extends State<MyLogin> {
   }
 
   KeysRepo keysRepo = KeysRepo();
+  PasswordRepo passRepo = PasswordRepo();
   
   Future<void> _keys() async {
     
-
     AsymmetricKeyPair rsaKeys = await keysRepo.generateKeys();
     await keysRepo.storePasswordEncryptedKeys("password", rsaKeys);
     AsymmetricKeyPair keysFromSP = await keysRepo.retrievePasswordEncryptedKeys("password");
     print(keysFromSP.privateKey);
     print(keysFromSP.publicKey);
-    
-    
+     
   }
 
- 
-
-
+  Future<void> _password() async {
+    await passRepo.addPasswordToStorage("password");
+    print(await passRepo.comparePasswords("password")); // returns true
+    print(await passRepo.comparePasswords("other string")); // returns false
+  }
 
 }
