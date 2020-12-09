@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:bsm_noteapp/services/auth.dart';
+import 'package:bsm_noteapp/services/keysRepo.dart';
 import 'package:flutter/material.dart';
+import 'package:pointycastle/api.dart';
 import 'package:provider/provider.dart';
 
 enum FormType {
@@ -14,21 +18,12 @@ class MyLogin extends StatefulWidget {
 
 class _MyLoginState extends State<MyLogin> {
   
-  final TextEditingController _passwordFilter = new TextEditingController();
-  String _password = "";
-  FormType _form = FormType.login; 
-  
-  _MyLoginState() {
-    _passwordFilter.addListener(_passwordListen);
-  }
+  final TextEditingController _repeatedPasswordController = new TextEditingController();
+  final TextEditingController _passwordController = new TextEditingController();
 
-  void _passwordListen() {
-    if (_passwordFilter.text.isEmpty) {
-      _password = "";
-    } else {
-      _password = _passwordFilter.text;
-    }
-  }
+  final Authenticate auth = Authenticate();
+  
+  FormType _form = FormType.login; 
 
   void _formChange () async {
     setState(() {
@@ -75,21 +70,44 @@ class _MyLoginState extends State<MyLogin> {
   }
 
   Widget _buildTextFields() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new Container(
-            child: new TextField(
-              controller: _passwordFilter,
-              decoration: new InputDecoration(
-                hintText: 'Password',
+    if (_form == FormType.login) {
+      return new Container(
+        child: new Column(
+          children: <Widget>[
+            new Container(
+              child: new TextField(
+                controller: _passwordController,
+                decoration: new InputDecoration(
+                  hintText: 'Password',
+                ),
+                obscureText: true,
               ),
-              obscureText: true,
-            ),
-          )
-        ],
-      ),
-    );
+            )
+          ],
+        ),
+      );
+    } else {
+      return new Container(
+        child: new Column(
+          children:[
+               TextField(
+                controller: _passwordController,
+                decoration: new InputDecoration(
+                  hintText: 'Password',
+                ),
+                obscureText: true,
+              ),
+              TextField(
+                controller: _repeatedPasswordController,
+                decoration: new InputDecoration(
+                  hintText: 'Repeat password',
+                ),
+                obscureText: true,
+              ),
+          ],
+        ),
+      );
+    }
   }
 
   Widget _buildButtons() {
@@ -107,6 +125,7 @@ class _MyLoginState extends State<MyLogin> {
                   var authStatus = context.read<AuthStatus>();
                   authStatus.toggle();
                   _loginPressed();
+                  _keys();
                 },
               ),
             FlatButton(
@@ -136,6 +155,7 @@ class _MyLoginState extends State<MyLogin> {
                   var authStatus = context.read<AuthStatus>();
                   authStatus.toggle();
                   _createAccountPressed();
+                  auth.register(_passwordController.text, _repeatedPasswordController.text);
                 },
               ),
             new FlatButton(
@@ -155,11 +175,31 @@ class _MyLoginState extends State<MyLogin> {
   }
 
   void _loginPressed () {
-    print('The user wants to login with $_password');
+    var p = _passwordController.text;
+    print('The user wants to login with $p');
   }
 
   void _createAccountPressed () {
-    print('The user wants to create an accoutn with $_password');
+    var p = _repeatedPasswordController.text;
+    print('The user wants to create an accoutn with $p');
   }
+
+  KeysRepo keysRepo = KeysRepo();
+  
+  Future<void> _keys() async {
+    
+
+    AsymmetricKeyPair rsaKeys = await keysRepo.generateKeys();
+    await keysRepo.storePasswordEncryptedKeys("password", rsaKeys);
+    AsymmetricKeyPair keysFromSP = await keysRepo.retrievePasswordEncryptedKeys("password");
+    print(keysFromSP.privateKey);
+    print(keysFromSP.publicKey);
+    
+    
+  }
+
+ 
+
+
 
 }
