@@ -1,3 +1,5 @@
+import 'package:bsm_noteapp/services/keysRepo.dart';
+import 'package:bsm_noteapp/services/passwordRepo.dart';
 import 'package:flutter/material.dart';
 
 class AuthStatus with ChangeNotifier {
@@ -10,30 +12,32 @@ class AuthStatus with ChangeNotifier {
 }
 
 class Authenticate {
+
+  KeysRepo keysRepo = KeysRepo();
+  PasswordRepo passRepo = PasswordRepo();
   
-  bool register(String password1, String password2) {
-    // if there is no password stored
-
-    // compare strings
-    if (password1 == password2) {
-      // hash(password)
-
-      // add to secure storage
-
-      return true;
+  Future<String> register(String password1, String password2) async {
+    if (!await passRepo.checkIfAlreadyRegistered()) {
+      if (password1 == password2) {
+        passRepo.addPasswordToStorage(password1);
+        return "Registered succesfully!";
+      }
+      else {
+        return "Passwords are not equal.";
+      }
     }
-
-    return false;
+    else {
+      return "You have account.\nTry to log in.";
+    }    
   }
 
-  bool login(String password) {
-    // hash(password)
-
-    // compare hashed input with stored hashed password
-    // if they match
-    return true;
-
-    // else return false;
+  Future<bool> login(String password) async {
+    if (await passRepo.comparePasswords(password)) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   // void changeNote(String note) {

@@ -31,4 +31,17 @@ class PasswordRepo {
       return false;
     }
   }
+
+  Future<bool> checkIfAlreadyRegistered() async {
+    if (await _storage.containsKey(key: _keyToStorage)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  Future<void> deletePasswordFromStorage() async {
+    await _storage.delete(key: _keyToStorage);
+  }
 }

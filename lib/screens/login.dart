@@ -1,6 +1,5 @@
 import 'package:bsm_noteapp/services/auth.dart';
 import 'package:bsm_noteapp/services/keysRepo.dart';
-import 'package:bsm_noteapp/services/passwordRepo.dart';
 import 'package:flutter/material.dart';
 import 'package:pointycastle/api.dart';
 import 'package:provider/provider.dart';
@@ -19,8 +18,12 @@ class _MyLoginState extends State<MyLogin> {
   
   final TextEditingController _repeatedPasswordController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
+  final TextEditingController _loginPasswordController = new TextEditingController();
+
+  String message = "";
 
   final Authenticate auth = Authenticate();
+  KeysRepo keysRepo = KeysRepo();
   
   FormType _form = FormType.login; 
 
@@ -45,13 +48,9 @@ class _MyLoginState extends State<MyLogin> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 _buildTextFields(),
+                _buildOutput(),
                 _buildButtons(),
-                Consumer<AuthStatus>(
-                builder: (context, authStatus, child) => Text(
-                  '${authStatus.loggedIn}',
-                  style: Theme.of(context).textTheme.headline4,
-                ),
-              ),
+                
             ],
             ),
           ),
@@ -75,7 +74,7 @@ class _MyLoginState extends State<MyLogin> {
           children: <Widget>[
             new Container(
               child: new TextField(
-                controller: _passwordController,
+                controller: _loginPasswordController,
                 decoration: new InputDecoration(
                   hintText: 'Password',
                 ),
@@ -109,6 +108,20 @@ class _MyLoginState extends State<MyLogin> {
     }
   }
 
+  Widget _buildOutput() {
+    return new Container(
+      margin: const EdgeInsets.only(top: 10.0),
+      child: new Column(
+        children: <Widget>[
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.red[800])
+          ),
+      ])
+    );
+  }
+
   Widget _buildButtons() {
     if (_form == FormType.login) {
       return new Container(
@@ -120,12 +133,16 @@ class _MyLoginState extends State<MyLogin> {
               RaisedButton(
                 color: Colors.yellow,
                 child: Text('LOGIN'),
-                onPressed: () {
-                  var authStatus = context.read<AuthStatus>();
-                  authStatus.toggle();
-                  _loginPressed();
-                  //_keys();
-                  _password();
+                onPressed: () async {
+                  
+                  final output = await auth.login(_loginPasswordController.text);
+                  if (output) {
+                    var authStatus = context.read<AuthStatus>();
+                    authStatus.toggle();
+                  } 
+                  else {
+                    setState(() => message = "Incorect password.");
+                  }
                 },
               ),
             FlatButton(
@@ -136,7 +153,10 @@ class _MyLoginState extends State<MyLogin> {
                    textAlign: TextAlign.center
                    ),
               ),
-              onPressed: _formChange,
+              onPressed: () {
+                _formChange();
+                setState(() => message = "");
+              },
             )
           ],
         ),
@@ -151,11 +171,14 @@ class _MyLoginState extends State<MyLogin> {
               RaisedButton(
                 color: Colors.yellow,
                 child: Text('REGISTER'),
-                onPressed: () {
-                  var authStatus = context.read<AuthStatus>();
-                  authStatus.toggle();
-                  _createAccountPressed();
-                  auth.register(_passwordController.text, _repeatedPasswordController.text);
+                onPressed: () async {
+                  
+                  final output = await auth.register(_passwordController.text, _repeatedPasswordController.text);
+                  if (output == "Registered succesfully!") {
+                    var authStatus = context.read<AuthStatus>();
+                    authStatus.toggle();
+                  }
+                  setState(() => message = output);
                 },
               ),
             new FlatButton(
@@ -166,26 +189,16 @@ class _MyLoginState extends State<MyLogin> {
                    textAlign: TextAlign.center
                    ),
               ),
-              onPressed: _formChange,
+              onPressed: () {
+                _formChange();
+                setState(() => message = "");
+                },
             )
           ],
         ),
       );
     }
   }
-
-  void _loginPressed () {
-    var p = _passwordController.text;
-    print('The user wants to login with $p');
-  }
-
-  void _createAccountPressed () {
-    var p = _repeatedPasswordController.text;
-    print('The user wants to create an accoutn with $p');
-  }
-
-  KeysRepo keysRepo = KeysRepo();
-  PasswordRepo passRepo = PasswordRepo();
   
   Future<void> _keys() async {
     
@@ -196,11 +209,4 @@ class _MyLoginState extends State<MyLogin> {
     print(keysFromSP.publicKey);
      
   }
-
-  Future<void> _password() async {
-    await passRepo.addPasswordToStorage("password");
-    print(await passRepo.comparePasswords("password")); // returns true
-    print(await passRepo.comparePasswords("other string")); // returns false
-  }
-
 }
