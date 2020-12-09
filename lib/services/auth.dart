@@ -45,12 +45,4 @@ class Authenticate {
 
   //   // store it
   // }
-
-  // void changePassword(String currentPassword, String currentPasswordRepeated, String newPassword) {
-  //   // compare passwords
-
-  //   // check if they are valid
-
-  //   // replace old by hash(newPassword) 
-  // }
 }

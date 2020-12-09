@@ -1,3 +1,4 @@
+import 'package:bsm_noteapp/services/changePassword.dart';
 import 'package:flutter/material.dart';
 
 class Settings extends StatefulWidget {
@@ -6,42 +7,13 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  ChangePassword change = ChangePassword();
 
   final TextEditingController _passwordController = new TextEditingController();
   final TextEditingController _repeatPasswordController = new TextEditingController();
   final TextEditingController _newPasswordController = new TextEditingController();
 
-  String _password = "";
-  String _repeatPassword = "";
-  String _newPassword = "";
-  
-  _SettingsState() {
-    _passwordController.addListener(_passwordListen);
-    _repeatPasswordController.addListener(_repeatPasswordListen);
-    _newPasswordController.addListener(_newPasswordListen);
-  }
-
-  void _passwordListen() {
-    if (_passwordController.text.isEmpty) {
-      _password = "";
-    } else {
-      _password = _passwordController.text;
-    }
-  }
-  void _repeatPasswordListen() {
-    if (_repeatPasswordController.text.isEmpty) {
-      _repeatPassword = "";
-    } else {
-      _repeatPassword = _repeatPasswordController.text;
-    }
-  }
-  void _newPasswordListen() {
-    if (_newPasswordController.text.isEmpty) {
-      _newPassword = "";
-    } else {
-      _newPassword = _newPasswordController.text;
-    }
-  }
+  String message = "";
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +37,7 @@ class _SettingsState extends State<Settings> {
                   decoration: InputDecoration(
                     hintText: 'Password',
                   ),
+                  obscureText: true,
                 ),
                 TextFormField(
                   controller: _repeatPasswordController,
@@ -80,16 +53,23 @@ class _SettingsState extends State<Settings> {
                   ),
                   obscureText: true,
                 ),
+                _buildOutput(),
                 SizedBox(
                   height: 24,
                 ),
                 RaisedButton(
                   color: Colors.yellow,
                   child: Text('SAVE'),
-                  onPressed: () {
-                    _savePressed();
+                  onPressed: () async {
+                    String output = await change.changePassword(_passwordController.text, _repeatPasswordController.text, _newPasswordController.text);
+                    setState(() {
+                      message = output;
+                    });
                     FocusScope.of(context).unfocus();
-                    Navigator.pop(context);
+                    if (output == "Password succesfully changed!") {
+                      Navigator.pop(context);
+                    }
+                    
                   },
                 )
               ],
@@ -100,8 +80,17 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-   void _savePressed () {
-    print('The user wants to change password from $_password to $_newPassword');
+  Widget _buildOutput() {
+    return new Container(
+      margin: const EdgeInsets.only(top: 10.0),
+      child: new Column(
+        children: <Widget>[
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.red[800])
+          ),
+      ])
+    );
   }
-
 }

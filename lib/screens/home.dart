@@ -10,20 +10,8 @@ class MyNote extends StatefulWidget {
 
 class _MyNoteState extends State<MyNote> {
 
-  final TextEditingController _noteFilter = new TextEditingController();
-  String _note = "";
- 
-  _MyNoteState() {
-    _noteFilter.addListener(_noteListen);
-  }
-
-  void _noteListen() {
-    if (_noteFilter.text.isEmpty) {
-      _note = "";
-    } else {
-      _note = _noteFilter.text;
-    }
-  }
+  final TextEditingController _noteController = new TextEditingController();
+  
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +48,7 @@ class _MyNoteState extends State<MyNote> {
               children: <Widget>[
                 TextField(
                   maxLines: 3,
-                  controller: _noteFilter,
+                  controller: _noteController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder()
                   )
@@ -72,16 +60,10 @@ class _MyNoteState extends State<MyNote> {
                   color: Colors.yellow,
                   child: Text('SAVE'),
                   onPressed: () {
-                    _savePressed();
+                    
                     FocusScope.of(context).unfocus();
                   },
                 ),
-                Consumer<AuthStatus>(
-                builder: (context, authStatus, child) => Text(
-                  '${authStatus.loggedIn}',
-                  style: Theme.of(context).textTheme.headline4,
-                ),
-              ),
             ],
             ),
           ),
@@ -98,8 +80,6 @@ class _MyNoteState extends State<MyNote> {
     );
   }
 
-  void _savePressed () {
-    print('The user saved $_note');
-  }
+  
 }
 
