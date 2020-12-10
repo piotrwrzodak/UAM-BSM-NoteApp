@@ -9,26 +9,30 @@ class PasswordRepo {
 
   // add hashed password to secure-storage
   Future<void> addPasswordToStorage(String password) async {
-    Crypt hashed = hashPassword(password);
-
+    Crypt hashed = hashPassword(password, 10000);
     await _storage.write(key: _keyToStorage, value: hashed.toString());
   }
 
   // hash password
-  Crypt hashPassword(String password) {
-    final hashed = Crypt.sha256(password, rounds: 10000, salt: _salt);
+  Crypt hashPassword(String password, int rounds) {
+    final hashed = Crypt.sha256(password, rounds: rounds, salt: _salt);
     return hashed;
   }
 
   Future<bool> comparePasswords(String inputPassword) async {
-    final hashedPassword = await _storage.read(key: _keyToStorage);
-    final h = Crypt(hashedPassword.toString());
-
-    if (h.match(inputPassword)) {
-      return true;
+    if (!await checkIfAlreadyRegistered()) {
+      return false;
     }
     else {
-      return false;
+      final hashedPassword = await _storage.read(key: _keyToStorage);
+      final h = Crypt(hashedPassword.toString());
+
+      if (h.match(inputPassword)) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 

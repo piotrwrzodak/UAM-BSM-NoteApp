@@ -1,7 +1,5 @@
 import 'package:bsm_noteapp/services/auth.dart';
-import 'package:bsm_noteapp/services/keysRepo.dart';
 import 'package:flutter/material.dart';
-import 'package:pointycastle/api.dart';
 import 'package:provider/provider.dart';
 
 enum FormType {
@@ -23,7 +21,6 @@ class _MyLoginState extends State<MyLogin> {
   String message = "";
 
   final Authenticate auth = Authenticate();
-  KeysRepo keysRepo = KeysRepo();
   
   FormType _form = FormType.login; 
 
@@ -134,10 +131,12 @@ class _MyLoginState extends State<MyLogin> {
                 color: Colors.yellow,
                 child: Text('LOGIN'),
                 onPressed: () async {
-                  
+                  //print('user wants to login with: ' + '\''+ _loginPasswordController.text + '\'');
                   final output = await auth.login(_loginPasswordController.text);
                   if (output) {
                     var authStatus = context.read<AuthStatus>();
+                    final hash = auth.setHash(_loginPasswordController.text);
+                    authStatus.string = hash;
                     authStatus.toggle();
                   } 
                   else {
@@ -172,10 +171,12 @@ class _MyLoginState extends State<MyLogin> {
                 color: Colors.yellow,
                 child: Text('REGISTER'),
                 onPressed: () async {
-                  
+                  print('user wants to register with: ' + '\''+ _passwordController.text + '\'');
                   final output = await auth.register(_passwordController.text, _repeatedPasswordController.text);
                   if (output == "Registered succesfully!") {
                     var authStatus = context.read<AuthStatus>();
+                    final hash = auth.setHash(_loginPasswordController.text);
+                    authStatus.string = hash;
                     authStatus.toggle();
                   }
                   setState(() => message = output);
@@ -198,15 +199,5 @@ class _MyLoginState extends State<MyLogin> {
         ),
       );
     }
-  }
-  
-  Future<void> _keys() async {
-    
-    AsymmetricKeyPair rsaKeys = await keysRepo.generateKeys();
-    await keysRepo.storePasswordEncryptedKeys("password", rsaKeys);
-    AsymmetricKeyPair keysFromSP = await keysRepo.retrievePasswordEncryptedKeys("password");
-    print(keysFromSP.privateKey);
-    print(keysFromSP.publicKey);
-     
   }
 }

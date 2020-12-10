@@ -1,5 +1,7 @@
+import 'package:bsm_noteapp/services/auth.dart';
 import 'package:bsm_noteapp/services/changePassword.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -7,7 +9,8 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  ChangePassword change = ChangePassword();
+  final ChangePassword change = ChangePassword();
+  final Authenticate auth = Authenticate();
 
   final TextEditingController _passwordController = new TextEditingController();
   final TextEditingController _repeatPasswordController = new TextEditingController();
@@ -67,9 +70,11 @@ class _SettingsState extends State<Settings> {
                     });
                     FocusScope.of(context).unfocus();
                     if (output == "Password succesfully changed!") {
+                      var authStatus = context.read<AuthStatus>();
+                      final hash = auth.setHash(_newPasswordController.text);
+                      authStatus.string = hash;
                       Navigator.pop(context);
                     }
-                    
                   },
                 )
               ],

@@ -1,5 +1,7 @@
 import 'package:bsm_noteapp/screens/settings.dart';
 import 'package:bsm_noteapp/services/auth.dart';
+import 'package:bsm_noteapp/services/keysRepo.dart';
+import 'package:bsm_noteapp/services/noteRepo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +13,9 @@ class MyNote extends StatefulWidget {
 class _MyNoteState extends State<MyNote> {
 
   final TextEditingController _noteController = new TextEditingController();
-  
+  final NoteRepo n = NoteRepo();
+  final KeysRepo keysRepo = KeysRepo();
+
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,8 @@ class _MyNoteState extends State<MyNote> {
           icon: Icon(Icons.logout), 
           onPressed: () {
             var authStatus = context.read<AuthStatus>();
-          authStatus.toggle();
+            authStatus.string = "";
+            authStatus.toggle();
           }
         )
       ],
@@ -60,7 +65,10 @@ class _MyNoteState extends State<MyNote> {
                   color: Colors.yellow,
                   child: Text('SAVE'),
                   onPressed: () {
+                    var authStatus = context.read<AuthStatus>();
                     
+                    //n.encryptNote("sdasd", authStatus.string);
+                    n.decryptNote(authStatus.string);
                     FocusScope.of(context).unfocus();
                   },
                 ),
@@ -79,7 +87,5 @@ class _MyNoteState extends State<MyNote> {
       ),
     );
   }
-
-  
 }
 

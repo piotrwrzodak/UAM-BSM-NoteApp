@@ -48,4 +48,21 @@ class KeysRepo {
 
     return keyPair;
   }
+
+  Future<void> clearKeys() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(_encryptedPublicKeyPrefsKey, null);
+    prefs.setString(_encryptedPrivateKeyPrefsKey, null);
+  }
+  
+  Future<void> seeKeys() async {
+    final prefs = await SharedPreferences.getInstance();
+    final encryptedPublicKey = prefs.getString(_encryptedPublicKeyPrefsKey);
+    final encryptedPrivateKey = prefs.getString(_encryptedPrivateKeyPrefsKey);
+    print('enc pub:');
+    print(encryptedPublicKey);
+    print('enc priv:');
+    print(encryptedPrivateKey);
+  }
+
 }

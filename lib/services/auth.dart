@@ -1,9 +1,13 @@
 import 'package:bsm_noteapp/services/keysRepo.dart';
+import 'package:bsm_noteapp/services/noteRepo.dart';
 import 'package:bsm_noteapp/services/passwordRepo.dart';
+import 'package:crypt/crypt.dart';
 import 'package:flutter/material.dart';
+import 'package:pointycastle/api.dart';
 
 class AuthStatus with ChangeNotifier {
   bool loggedIn = false;
+  String string = "";
 
   void toggle() {
     loggedIn = !loggedIn;
@@ -15,34 +19,51 @@ class Authenticate {
 
   KeysRepo keysRepo = KeysRepo();
   PasswordRepo passRepo = PasswordRepo();
+  NoteRepo noteRepo = NoteRepo();
   
   Future<String> register(String password1, String password2) async {
     if (!await passRepo.checkIfAlreadyRegistered()) {
       if (password1 == password2) {
+        // hash password and add to secure-storage
         passRepo.addPasswordToStorage(password1);
+
+        // generate rsa keys, and store them encrypted with key generated with hashed password and salt
+        AsymmetricKeyPair rsaKeys = await keysRepo.generateKeys();
+        final hash = setHash(password1);
+        await keysRepo.storePasswordEncryptedKeys(hash, rsaKeys);
+        
         return "Registered succesfully!";
       }
-      else {
-        return "Passwords are not equal.";
-      }
+      else return "Passwords are not equal.";
     }
-    else {
-      return "You have account.\nTry to log in.";
-    }    
+    else return "You have account.\nTry to log in.";
   }
 
   Future<bool> login(String password) async {
+    if (password.trim() == "") {
+      return false;
+    }
     if (await passRepo.comparePasswords(password)) {
       return true;
     }
-    else {
-      return false;
-    }
+    else return false;
   }
 
-  // void changeNote(String note) {
-  //   // encrypt note
+  String setHash(String password) {
+    Crypt hash = passRepo.hashPassword(password, 5000);
+    return hash.toString();
+  }
 
-  //   // store it
-  // }
+  Future<void> resetAll() async {
+    await keysRepo.clearKeys();
+    await passRepo.deletePasswordFromStorage();
+    await noteRepo.clearNote();
+  }
+
+  Future<void> seeState() async {
+    await keysRepo.seeKeys();
+    final b = await passRepo.checkIfAlreadyRegistered();
+    await noteRepo.seeNote();
+    print(b);
+  }
 }
