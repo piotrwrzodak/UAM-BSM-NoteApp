@@ -144,7 +144,7 @@ class _MyLoginState extends State<MyLogin> {
                   }
                 },
               ),
-            FlatButton(
+              FlatButton(
               child: Align(
                 alignment: Alignment.center,
                 child: Text(

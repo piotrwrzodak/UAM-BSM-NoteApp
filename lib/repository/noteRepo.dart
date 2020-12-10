@@ -27,17 +27,24 @@ class NoteRepo {
     print('encrypted: ' + encrypted.base64);
   }
 
-  Future<void> decryptNote(String hash) async {
+  Future<String> decryptNote(String hash) async {
     AsymmetricKeyPair keys = await keysRepo.retrievePasswordEncryptedKeys(hash);
     final encrypter = Encrypter(RSA(publicKey: keys.publicKey, privateKey: keys.privateKey));
      
     Uint8List encryptionKey = await getKeyToStorage();
 
     var encryptedBox = await Hive.openBox('vaultBox', encryptionCipher: HiveAesCipher(encryptionKey));
-    String encryptedText = encryptedBox.get('secret');
-    Encrypted toDecrypt = Encrypted.fromBase64(encryptedText);
-    final decrypted = encrypter.decrypt(toDecrypt);
-    print('decrypted: ' + decrypted);
+    final encryptedText = encryptedBox.get('secret');
+    if (encryptedText != null) {
+      Encrypted toDecrypt = Encrypted.fromBase64(encryptedText);
+      final decrypted = encrypter.decrypt(toDecrypt);
+      print('decrypted: ' + decrypted);
+      return decrypted;
+    }
+    else {
+      return "Here save your note!";
+    }
+    
   }
 
   Future<Uint8List> getKeyToStorage() async {
