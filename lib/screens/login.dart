@@ -175,7 +175,7 @@ class _MyLoginState extends State<MyLogin> {
                   final output = await auth.register(_passwordController.text, _repeatedPasswordController.text);
                   if (output == "Registered succesfully!") {
                     var authStatus = context.read<AuthStatus>();
-                    final hash = auth.setHash(_loginPasswordController.text);
+                    final hash = auth.setHash(_passwordController.text);
                     authStatus.string = hash;
                     authStatus.toggle();
                   }

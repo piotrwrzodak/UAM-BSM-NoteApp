@@ -1,5 +1,5 @@
-import 'package:bsm_noteapp/services/keysRepo.dart';
-import 'package:bsm_noteapp/services/passwordRepo.dart';
+import 'package:bsm_noteapp/repository/keysRepo.dart';
+import 'package:bsm_noteapp/repository/passwordRepo.dart';
 import 'package:pointycastle/api.dart';
 
 class ChangePassword {

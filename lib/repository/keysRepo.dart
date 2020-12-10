@@ -34,13 +34,24 @@ class KeysRepo {
   }
 
   Future<AsymmetricKeyPair<PublicKey, PrivateKey>> retrievePasswordEncryptedKeys(String password) async {
+    String publicKeyPem, privateKeyPem;
     final prefs = await SharedPreferences.getInstance();
     final encryptedPublicKey = prefs.getString(_encryptedPublicKeyPrefsKey);
     final encryptedPrivateKey = prefs.getString(_encryptedPrivateKeyPrefsKey);
 
     final key = await _cryptor.generateKeyFromPassword(password, _salt);
-    final publicKeyPem = await _cryptor.decrypt(encryptedPublicKey, key);
-    final privateKeyPem = await _cryptor.decrypt(encryptedPrivateKey, key);
+
+    try {
+      publicKeyPem = await _cryptor.decrypt(encryptedPublicKey, key);
+    } on MacMismatchException {
+      print("wrongly decrypted");
+    }
+    try {
+      privateKeyPem = await _cryptor.decrypt(encryptedPrivateKey, key);
+    } on MacMismatchException {
+      print("wrongly decrypted");
+    }
+
     final publicKey = _rsaHelper.parsePublicKeyFromPem(publicKeyPem);
     final privateKey = _rsaHelper.parsePrivateKeyFromPem(privateKeyPem);
 

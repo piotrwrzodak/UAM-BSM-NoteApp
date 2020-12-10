@@ -1,6 +1,6 @@
-import 'package:bsm_noteapp/services/keysRepo.dart';
-import 'package:bsm_noteapp/services/noteRepo.dart';
-import 'package:bsm_noteapp/services/passwordRepo.dart';
+import 'package:bsm_noteapp/repository/keysRepo.dart';
+import 'package:bsm_noteapp/repository/noteRepo.dart';
+import 'package:bsm_noteapp/repository/passwordRepo.dart';
 import 'package:crypt/crypt.dart';
 import 'package:flutter/material.dart';
 import 'package:pointycastle/api.dart';
@@ -24,15 +24,18 @@ class Authenticate {
   Future<String> register(String password1, String password2) async {
     if (!await passRepo.checkIfAlreadyRegistered()) {
       if (password1 == password2) {
-        // hash password and add to secure-storage
-        passRepo.addPasswordToStorage(password1);
+        if (password1.trim() != '') {
+          // hash password and add to secure-storage
+          passRepo.addPasswordToStorage(password1);
 
-        // generate rsa keys, and store them encrypted with key generated with hashed password and salt
-        AsymmetricKeyPair rsaKeys = await keysRepo.generateKeys();
-        final hash = setHash(password1);
-        await keysRepo.storePasswordEncryptedKeys(hash, rsaKeys);
-        
-        return "Registered succesfully!";
+          // generate rsa keys, and store them encrypted with key generated with hashed password and salt
+          AsymmetricKeyPair rsaKeys = await keysRepo.generateKeys();
+          final hash = setHash(password1);
+          await keysRepo.storePasswordEncryptedKeys(hash, rsaKeys);
+          
+          return "Registered succesfully!";
+        }
+        else return "Password can't be empty.";
       }
       else return "Passwords are not equal.";
     }

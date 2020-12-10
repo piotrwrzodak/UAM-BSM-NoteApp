@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:bsm_noteapp/services/keysRepo.dart';
+import 'package:bsm_noteapp/repository/keysRepo.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';

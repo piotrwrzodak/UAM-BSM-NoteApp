@@ -1,7 +1,7 @@
 import 'package:bsm_noteapp/screens/settings.dart';
 import 'package:bsm_noteapp/services/auth.dart';
-import 'package:bsm_noteapp/services/keysRepo.dart';
-import 'package:bsm_noteapp/services/noteRepo.dart';
+import 'package:bsm_noteapp/repository/keysRepo.dart';
+import 'package:bsm_noteapp/repository/noteRepo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -67,7 +67,7 @@ class _MyNoteState extends State<MyNote> {
                   onPressed: () {
                     var authStatus = context.read<AuthStatus>();
                     
-                    //n.encryptNote("sdasd", authStatus.string);
+                    n.encryptNote("sdasd", authStatus.string);
                     n.decryptNote(authStatus.string);
                     FocusScope.of(context).unfocus();
                   },
