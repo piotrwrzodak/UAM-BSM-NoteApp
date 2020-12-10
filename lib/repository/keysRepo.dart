@@ -66,14 +66,15 @@ class KeysRepo {
     prefs.setString(_encryptedPrivateKeyPrefsKey, null);
   }
   
-  Future<void> seeKeys() async {
-    final prefs = await SharedPreferences.getInstance();
-    final encryptedPublicKey = prefs.getString(_encryptedPublicKeyPrefsKey);
-    final encryptedPrivateKey = prefs.getString(_encryptedPrivateKeyPrefsKey);
-    print('enc pub:');
-    print(encryptedPublicKey);
-    print('enc priv:');
-    print(encryptedPrivateKey);
-  }
+  // // function for debug
+  // Future<void> seeKeys() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final encryptedPublicKey = prefs.getString(_encryptedPublicKeyPrefsKey);
+  //   final encryptedPrivateKey = prefs.getString(_encryptedPrivateKeyPrefsKey);
+  //   print('enc pub:');
+  //   print(encryptedPublicKey);
+  //   print('enc priv:');
+  //   print(encryptedPrivateKey);
+  // }
 
 }

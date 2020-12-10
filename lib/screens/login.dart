@@ -53,14 +53,6 @@ class _MyLoginState extends State<MyLogin> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          var authStatus = context.read<AuthStatus>();
-          authStatus.toggle();
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
     );
   }
 
@@ -131,7 +123,6 @@ class _MyLoginState extends State<MyLogin> {
                 color: Colors.yellow,
                 child: Text('LOGIN'),
                 onPressed: () async {
-                  //print('user wants to login with: ' + '\''+ _loginPasswordController.text + '\'');
                   final output = await auth.login(_loginPasswordController.text);
                   if (output) {
                     var authStatus = context.read<AuthStatus>();
@@ -144,7 +135,18 @@ class _MyLoginState extends State<MyLogin> {
                   }
                 },
               ),
-              FlatButton(
+              // // button to reset all data
+              // RaisedButton(
+              //   color: Colors.yellow,
+              //   child: Text('RESET ALL'),
+              //   onPressed: () async {
+              //       await auth.resetAll();
+              //       await auth.seeState();
+              //       var authStatus = context.read<AuthStatus>();
+              //       print('auth.string' + authStatus.string);
+              //     } 
+              // ),
+            FlatButton(
               child: Align(
                 alignment: Alignment.center,
                 child: Text(
@@ -171,7 +173,6 @@ class _MyLoginState extends State<MyLogin> {
                 color: Colors.yellow,
                 child: Text('REGISTER'),
                 onPressed: () async {
-                  print('user wants to register with: ' + '\''+ _passwordController.text + '\'');
                   final output = await auth.register(_passwordController.text, _repeatedPasswordController.text);
                   if (output == "Registered succesfully!") {
                     var authStatus = context.read<AuthStatus>();

@@ -63,10 +63,11 @@ class Authenticate {
     await noteRepo.clearNote();
   }
 
-  Future<void> seeState() async {
-    await keysRepo.seeKeys();
-    final b = await passRepo.checkIfAlreadyRegistered();
-    await noteRepo.seeNote();
-    print(b);
-  }
+  // // function for debug
+  // Future<void> seeState() async {
+  //   await keysRepo.seeKeys();
+  //   final b = await passRepo.checkIfAlreadyRegistered();
+  //   await noteRepo.seeNote();
+  //   print(b);
+  // }
 }

@@ -24,7 +24,6 @@ class NoteRepo {
     var encryptedBox = await Hive.openBox('vaultBox', encryptionCipher: HiveAesCipher(encryptionKey));
     String toBox = encrypted.base64;
     encryptedBox.put('secret', toBox);
-    print('encrypted: ' + encrypted.base64);
   }
 
   Future<String> decryptNote(String hash) async {
@@ -38,13 +37,11 @@ class NoteRepo {
     if (encryptedText != null) {
       Encrypted toDecrypt = Encrypted.fromBase64(encryptedText);
       final decrypted = encrypter.decrypt(toDecrypt);
-      print('decrypted: ' + decrypted);
       return decrypted;
     }
     else {
       return "Here save your note!";
     }
-    
   }
 
   Future<Uint8List> getKeyToStorage() async {
@@ -58,18 +55,19 @@ class NoteRepo {
     return encryptionKey;
   }
 
-    Future<void> clearNote() async {
+  Future<void> clearNote() async {
     Uint8List encryptionKey = await getKeyToStorage();
     var encryptedBox = await Hive.openBox('vaultBox', encryptionCipher: HiveAesCipher(encryptionKey));
     encryptedBox.clear();
   }
 
-  Future<void> seeNote() async {
-    final encryptionKey = await getKeyToStorage();
-    var encryptedBox = await Hive.openBox('vaultBox', encryptionCipher: HiveAesCipher(encryptionKey));
-    final encryptedText = encryptedBox.get('secret');
-    print('encrypted text');
-    print(encryptedText);
-  }
+  // // function for debug
+  // Future<void> seeNote() async {
+  //   final encryptionKey = await getKeyToStorage();
+  //   var encryptedBox = await Hive.openBox('vaultBox', encryptionCipher: HiveAesCipher(encryptionKey));
+  //   final encryptedText = encryptedBox.get('secret');
+  //   print('encrypted text');
+  //   print(encryptedText);
+  // }
 
 }

@@ -80,14 +80,6 @@ class _MyNoteState extends State<MyNote> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          var authStatus = context.read<AuthStatus>();
-          authStatus.toggle();
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
     );
   }
 }
