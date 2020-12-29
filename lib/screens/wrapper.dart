@@ -1,5 +1,5 @@
+import 'package:bsm_noteapp/screens/bioLogin.dart';
 import 'package:bsm_noteapp/screens/home.dart';
-import 'package:bsm_noteapp/screens/login.dart';
 import 'package:bsm_noteapp/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -23,7 +23,7 @@ class _WrapperState extends State<Wrapper> {
 
   @override
    Widget build(BuildContext context) {
-    return context.watch<AuthStatus>().loggedIn ? MyNote() : MyLogin();
+    return context.watch<AuthStatus>().loggedIn ? MyNote() : BioLogin();
   }
 }
 class HiveHelper {
