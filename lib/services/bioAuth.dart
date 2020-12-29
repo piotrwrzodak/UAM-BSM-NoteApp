@@ -1,12 +1,26 @@
+import 'package:bsm_noteapp/repository/bioRepo.dart';
 import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/local_auth.dart';
 
 
 class BioAuth {
+
+  BioRepo _bioRepo = BioRepo();
+
+  static const androidAuthMessage = AndroidAuthMessages(signInTitle: "Login to HomePage");
+  static const iosAuthMessage = IOSAuthMessages(
+    cancelButton: 'cancel',
+    goToSettingsButton: 'settings',
+    goToSettingsDescription: 'Please set up your Touch ID.',
+    lockOut: 'Please reenable your Touch ID'
+  );
+
   
   Future<bool> checkBio() async {
     final LocalAuthentication auth = LocalAuthentication();
+
     bool canCheckBiometrics = false;
+    
     try {
       canCheckBiometrics = await auth.canCheckBiometrics;
     } catch (e) {
@@ -35,16 +49,12 @@ class BioAuth {
     
     try {
       authenticated = await auth.authenticateWithBiometrics(
-          localizedReason: 'Touch your finger on the sensor to login',
-          useErrorDialogs: true,
-          stickyAuth: false,
-          iOSAuthStrings: IOSAuthMessages(
-            cancelButton: 'cancel',
-            goToSettingsButton: 'settings',
-            goToSettingsDescription: 'Please set up your Touch ID.',
-            lockOut: 'Please reenable your Touch ID'),
-          androidAuthStrings:
-              AndroidAuthMessages(signInTitle: "Login to HomePage"));
+        localizedReason: 'Touch your finger on the sensor to login',
+        useErrorDialogs: true,
+        stickyAuth: false,
+        iOSAuthStrings: iosAuthMessage,
+        androidAuthStrings: androidAuthMessage
+      );
           
     } catch (e) {
       print("error using biometric auth: $e");
@@ -58,4 +68,14 @@ class BioAuth {
       return false;
     }
   }
+
+  Future<void> saveNote(String note) async {
+    await _bioRepo.encryptNote(note);
+  }
+
+  Future<String> getNote() async {
+    final note = await _bioRepo.decryptNote();
+    return note;
+  }
+
 }
