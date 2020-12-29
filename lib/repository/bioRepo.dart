@@ -69,4 +69,8 @@ class BioRepo {
       return "Here save your note!";
     }
   }
+
+  Future<void> clear() async {
+    await secureStorage.deleteAll();
+  }
 }

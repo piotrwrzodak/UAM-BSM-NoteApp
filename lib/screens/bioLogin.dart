@@ -42,13 +42,20 @@ class _BioLoginState extends State<BioLogin> {
                 color: Colors.yellow,
                 child: Text('LOGIN'),
                 onPressed: () async {
-                 
-                    bool bioLoginStatus = await auth.checkBio();
-                    var authStatus = context.read<AuthStatus>();
-                    if (bioLoginStatus) authStatus.toggle();
-              
+                  bool bioLoginStatus = await auth.checkBio();
+                  if (bioLoginStatus) await auth.prepareKeys();
+                  var authStatus = context.read<AuthStatus>();
+                  if (bioLoginStatus) authStatus.toggle();
                 },
               ),
+              // // button to reset all data
+              // RaisedButton(
+              //   color: Colors.yellow,
+              //   child: Text('RESET ALL'),
+              //   onPressed: () async {
+              //       await auth.clear();
+              //     } 
+              // ),
         ]
       )
     );

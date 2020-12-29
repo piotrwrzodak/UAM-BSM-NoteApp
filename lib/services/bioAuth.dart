@@ -69,6 +69,10 @@ class BioAuth {
     }
   }
 
+  Future<void> prepareKeys() async {
+    await _bioRepo.getKeys();
+  }
+
   Future<void> saveNote(String note) async {
     await _bioRepo.encryptNote(note);
   }
@@ -76,6 +80,10 @@ class BioAuth {
   Future<String> getNote() async {
     final note = await _bioRepo.decryptNote();
     return note;
+  }
+
+  Future<void> clear() async {
+    await _bioRepo.clear();
   }
 
 }
