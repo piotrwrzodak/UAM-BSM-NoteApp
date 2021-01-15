@@ -2,26 +2,9 @@ import 'package:bsm_noteapp/repository/keysRepo.dart';
 import 'package:bsm_noteapp/repository/noteRepo.dart';
 import 'package:bsm_noteapp/repository/passwordRepo.dart';
 import 'package:crypt/crypt.dart';
-import 'package:flutter/material.dart';
 import 'package:pointycastle/api.dart';
 
-class AuthStatus with ChangeNotifier {
-  bool loggedIn = false;
-  String loginMethod = "chooseLogin";
-  String string = "";
-
-  void toggle() {
-    loggedIn = !loggedIn;
-    notifyListeners();
-  }
-
-  void setLoginMethod(String method) {
-    loginMethod = method;
-    notifyListeners();
-  }
-}
-
-class Authenticate {
+class PasswordAuth {
 
   KeysRepo keysRepo = KeysRepo();
   PasswordRepo passRepo = PasswordRepo();

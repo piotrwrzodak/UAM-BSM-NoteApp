@@ -1,4 +1,5 @@
-import 'package:bsm_noteapp/services/auth.dart';
+import 'package:bsm_noteapp/services/auth/passwordAuth.dart';
+import 'package:bsm_noteapp/services/state.dart';
 import 'package:bsm_noteapp/services/changePassword.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,7 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   final ChangePassword change = ChangePassword();
-  final Authenticate auth = Authenticate();
+  final PasswordAuth auth = PasswordAuth();
 
   final TextEditingController _passwordController = new TextEditingController();
   final TextEditingController _repeatPasswordController = new TextEditingController();

@@ -2,7 +2,7 @@ import 'package:bsm_noteapp/screens/bioLogin.dart';
 import 'package:bsm_noteapp/screens/chooseLogin.dart';
 import 'package:bsm_noteapp/screens/home.dart';
 import 'package:bsm_noteapp/screens/login.dart';
-import 'package:bsm_noteapp/services/auth.dart';
+import 'package:bsm_noteapp/services/state.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';

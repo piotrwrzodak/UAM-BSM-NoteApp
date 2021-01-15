@@ -1,4 +1,5 @@
-import 'package:bsm_noteapp/services/auth.dart';
+import 'package:bsm_noteapp/services/auth/passwordAuth.dart';
+import 'package:bsm_noteapp/services/state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,7 @@ class _MyLoginState extends State<MyLogin> {
 
   String message = "";
 
-  final Authenticate auth = Authenticate();
+  final PasswordAuth auth = PasswordAuth();
   
   FormType _form = FormType.login; 
 
