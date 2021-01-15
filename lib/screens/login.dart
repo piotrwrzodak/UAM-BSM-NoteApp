@@ -47,7 +47,7 @@ class _MyLoginState extends State<MyLogin> {
                 _buildTextFields(),
                 _buildOutput(),
                 _buildButtons(),
-                
+                _buildChangeLogin()
             ],
             ),
           ),
@@ -200,5 +200,28 @@ class _MyLoginState extends State<MyLogin> {
         ),
       );
     }
+  }
+
+    Widget _buildChangeLogin() {
+    return new Container(
+      margin: const EdgeInsets.only(top: 10.0),
+      child: new Column(
+        children: <Widget>[
+           new FlatButton(
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'login with fingerprint',
+                   textAlign: TextAlign.center
+                   ),
+              ),
+              onPressed: () {
+                var authStatus = context.read<AuthStatus>();
+                authStatus.setLoginMethod("fingerprint");
+                },
+            )
+        ]
+      )
+    );
   }
 }
