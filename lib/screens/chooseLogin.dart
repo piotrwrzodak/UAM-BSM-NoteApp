@@ -1,5 +1,4 @@
 import 'package:bsm_noteapp/services/state.dart';
-//import 'package:bsm_noteapp/services/bioAuth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

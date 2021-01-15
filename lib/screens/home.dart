@@ -17,8 +17,7 @@ class _MyNoteState extends State<MyNote> {
   @override
   void initState() {
     (() async {
-      var authStatus = context.read<AuthStatus>();
-      _noteController.text = await n.initNote(authStatus.string);
+      _noteController.text = await n.initNote();
     })();
     super.initState();
   }
@@ -70,8 +69,7 @@ class _MyNoteState extends State<MyNote> {
                   color: Colors.yellow,
                   child: Text('SAVE'),
                   onPressed: () {
-                    var authStatus = context.read<AuthStatus>();
-                    n.saveNote(_noteController.text, authStatus.string);
+                    n.saveNote(_noteController.text);
                     FocusScope.of(context).unfocus();
                   },
                 ),

@@ -1,8 +1,6 @@
 import 'package:bsm_noteapp/services/auth/passwordAuth.dart';
-import 'package:bsm_noteapp/services/state.dart';
 import 'package:bsm_noteapp/services/changePassword.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -71,9 +69,6 @@ class _SettingsState extends State<Settings> {
                     });
                     FocusScope.of(context).unfocus();
                     if (output == "Password succesfully changed!") {
-                      var authStatus = context.read<AuthStatus>();
-                      final hash = auth.setHash(_newPasswordController.text);
-                      authStatus.string = hash;
                       Navigator.pop(context);
                     }
                   },

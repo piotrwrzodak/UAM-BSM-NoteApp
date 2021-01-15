@@ -14,11 +14,10 @@ class NoteRepo {
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
   
 
-  Future<void> encryptNote(String text, String hash) async {
-    AsymmetricKeyPair keys = await keysRepo.retrievePasswordEncryptedKeys(hash);
+  Future<void> encryptNote(String text) async {
+    AsymmetricKeyPair keys = await keysRepo.retrieveKeys();
     final encrypter = Encrypter(RSA(publicKey: keys.publicKey, privateKey: keys.privateKey));
     final encrypted = encrypter.encrypt(text);
-
     Uint8List encryptionKey = await getKeyToStorage();
 
     var encryptedBox = await Hive.openBox('vaultBox', encryptionCipher: HiveAesCipher(encryptionKey));
@@ -26,14 +25,15 @@ class NoteRepo {
     encryptedBox.put('secret', toBox);
   }
 
-  Future<String> decryptNote(String hash) async {
-    AsymmetricKeyPair keys = await keysRepo.retrievePasswordEncryptedKeys(hash);
+  Future<String> decryptNote() async {
+    AsymmetricKeyPair keys = await keysRepo.retrieveKeys();
     final encrypter = Encrypter(RSA(publicKey: keys.publicKey, privateKey: keys.privateKey));
      
     Uint8List encryptionKey = await getKeyToStorage();
 
     var encryptedBox = await Hive.openBox('vaultBox', encryptionCipher: HiveAesCipher(encryptionKey));
     final encryptedText = encryptedBox.get('secret');
+    
     if (encryptedText != null) {
       Encrypted toDecrypt = Encrypted.fromBase64(encryptedText);
       final decrypted = encrypter.decrypt(toDecrypt);

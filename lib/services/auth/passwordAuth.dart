@@ -1,7 +1,6 @@
 import 'package:bsm_noteapp/repository/keysRepo.dart';
 import 'package:bsm_noteapp/repository/noteRepo.dart';
 import 'package:bsm_noteapp/repository/passwordRepo.dart';
-import 'package:crypt/crypt.dart';
 import 'package:pointycastle/api.dart';
 
 class PasswordAuth {
@@ -14,13 +13,10 @@ class PasswordAuth {
     if (!await passRepo.checkIfAlreadyRegistered()) {
       if (password1 == password2) {
         if (password1.trim() != '') {
-          // hash password and add to secure-storage
+          
           passRepo.addPasswordToStorage(password1);
-
-          // generate rsa keys, and store them encrypted with key generated with hashed password and salt
           AsymmetricKeyPair rsaKeys = await keysRepo.generateKeys();
-          final hash = setHash(password1);
-          await keysRepo.storePasswordEncryptedKeys(hash, rsaKeys);
+          await keysRepo.storeKeys(rsaKeys);
           
           return "Registered succesfully!";
         }
@@ -41,13 +37,8 @@ class PasswordAuth {
     else return false;
   }
 
-  String setHash(String password) {
-    Crypt hash = passRepo.hashPassword(password, 5000);
-    return hash.toString();
-  }
-
   Future<void> resetAll() async {
-    await keysRepo.clearKeys();
+    await keysRepo.clear();
     await passRepo.deletePasswordFromStorage();
     await noteRepo.clearNote();
   }
