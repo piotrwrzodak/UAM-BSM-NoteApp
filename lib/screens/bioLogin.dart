@@ -1,3 +1,4 @@
+import 'package:bsm_noteapp/services/auth/fingerprintAuth.dart';
 import 'package:bsm_noteapp/services/state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,8 @@ class BioLogin extends StatefulWidget {
 }
 
 class _BioLoginState extends State<BioLogin> {
+
+  FingerprintAuth auth = FingerprintAuth();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,12 @@ class _BioLoginState extends State<BioLogin> {
                 color: Colors.yellow,
                 child: Text('LOGIN'),
                 onPressed: () async {
-                  
+                  final result = await auth.checkBio();
+                  if (result) {
+                    await auth.prepareKeys();
+                    var authStatus = context.read<AuthStatus>();
+                    authStatus.toggle();
+                  }
                 },
               ),
         ]
